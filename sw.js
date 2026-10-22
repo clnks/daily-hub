@@ -2,7 +2,7 @@
    App files are cached on install. Everything else (artwork images, country
    details, fonts) is cached the first time it is fetched. */
 
-const VERSION = "daily-hub-v5";
+const VERSION = "daily-hub-v6";
 
 const APP_FILES = [
   "./",
@@ -42,9 +42,10 @@ self.addEventListener("fetch", (event) => {
   const sameOrigin = new URL(req.url).origin === self.location.origin;
 
   if (sameOrigin) {
-    // Network first, so updates appear quickly; fall back to the cache offline.
+    // Network first, and skip the browser's own cache (GitHub Pages asks for
+    // 10 minutes), so updates show on the next open; fall back offline.
     event.respondWith(
-      fetch(req)
+      fetch(req.url, { cache: "no-cache" })
         .then((res) => {
           const copy = res.clone();
           caches.open(VERSION).then((cache) => cache.put(req, copy));
