@@ -2,7 +2,7 @@
    App files are cached on install. Everything else (artwork images, country
    details, fonts) is cached the first time it is fetched. */
 
-const VERSION = "daily-hub-v7";
+const VERSION = "daily-hub-v8";
 
 const APP_FILES = [
   "./",
@@ -12,14 +12,15 @@ const APP_FILES = [
   "manifest.json",
   "icons/icon-192.png",
   "data/art.json",
+  "data/artists.json",
   "data/contemporary.json",
-  "data/debate.json",
   "data/places.json",
   "data/ideas.json",
+  "data/politics.json",
   "data/watch.json",
+  "data/debate.json",
   "data/move.json",
   "data/money.json",
-  "data/work.json",
   "data/mind.json",
 ];
 
