@@ -1,0 +1,44 @@
+{
+ "debt": [
+  {"step":"Look at the StepChange website for ten minutes.","note":"StepChange is a free debt charity. You do not have to contact them yet, just see what they offer."},
+  {"step":"Save the National Debtline number in your phone.","note":"0808 808 4000, free and confidential. Having it ready makes it easier to call on a good day."},
+  {"step":"Check your free credit report.","note":"ClearScore, Experian or Equifax all have free versions. Just look; nothing to fix today."},
+  {"step":"Write down one balance you have been avoiding looking at.","note":"Only one. Knowing the number usually feels better than not knowing."},
+  {"step":"Check whether any direct debit is for something you no longer use.","note":"One quick scroll through your banking app is enough."},
+  {"step":"Read StepChange's page on debt management plans.","note":"Just to understand what one is, with no commitment."},
+  {"step":"Check your account interest rates.","note":"Find the one with the highest rate. That is usually the one to tackle first."},
+  {"step":"Look up 'Breathing Space' on the Gov.uk website.","note":"A legal scheme that can pause interest and enforcement for 60 days while you get advice."},
+  {"step":"Use a free benefits calculator such as Turn2us or entitledto.","note":"It only takes a few minutes, and many people are missing money they are entitled to."},
+  {"step":"Set up one reminder for a payment date.","note":"Calendar or banking app. A small guard against late fees."},
+  {"step":"If you are ready, book a call with StepChange or National Debtline.","note":"Free, no judgement. Only if today feels like the day."},
+  {"step":"Notice one thing that went well with money this month.","note":"Progress counts, even small progress."}
+ ],
+ "job": [
+  {"step":"Find one GRC role that looks interesting and save it.","note":"No need to apply today. Just collect it."},
+  {"step":"Apply for one GRC role you have saved.","note":"One application is a good day."},
+  {"step":"Update your LinkedIn headline.","note":"Say what you do and what you want, e.g. 'GRC professional | Risk, compliance and data protection'."},
+  {"step":"Add one recent achievement to your LinkedIn or CV.","note":"Use a number if you can: an audit passed, a policy written, a risk reduced."},
+  {"step":"Turn on 'Open to work' for recruiters only on LinkedIn.","note":"Only recruiters see it, not your current employer's network."},
+  {"step":"Follow three companies you would like to work for.","note":"Their posts will start showing you what they value."},
+  {"step":"Ask one person for a LinkedIn recommendation.","note":"A colleague or old manager. A short message is fine."},
+  {"step":"Look up the salary range for your next role.","note":"Check a few job adverts or a salary guide so you know your worth."},
+  {"step":"Comment thoughtfully on one GRC post on LinkedIn.","note":"Being visible helps recruiters find you."},
+  {"step":"Message one recruiter who specialises in GRC.","note":"Keep it short: who you are, what you want, a link to your profile."},
+  {"step":"Tidy one section of your CV.","note":"Just one: the summary, skills or a role."},
+  {"step":"Add a skill to your LinkedIn skills list.","note":"Such as ISO 27001, risk assessment, third-party risk or GDPR."}
+ ],
+ "side": [
+  {"step":"Practise one nail design.","note":"Try it on a practice tip or your own nails. It does not need to be perfect."},
+  {"step":"Take a good photo of a nail set you have done.","note":"Natural light by a window works best."},
+  {"step":"Save three nail designs you would like to try.","note":"Pinterest or Instagram. Collecting ideas counts."},
+  {"step":"Practise a clean cuticle line or a neat French tip.","note":"Basics make everything else look professional."},
+  {"step":"Make one simple interior design render.","note":"One room, one idea. A mood or colour study is enough."},
+  {"step":"Save three rooms you love and note what they share.","note":"Colour, light, materials? Learning your own taste is the work."},
+  {"step":"Learn one new tool or shortcut in your design software.","note":"Ten minutes on a tutorial is plenty."},
+  {"step":"Restyle one corner of your home and photograph it.","note":"A shelf or a bedside table. Real projects build a portfolio."},
+  {"step":"Look at what local nail techs charge.","note":"Just research. It helps you price your own work when ready."},
+  {"step":"Post one piece of work, nails or interiors.","note":"Only if it feels good. Sharing builds confidence."},
+  {"step":"Watch one short tutorial in either craft.","note":"Learning counts as progress."},
+  {"step":"Write down one small side income goal for this month.","note":"Something gentle, like 'practise four designs'."}
+ ]
+}

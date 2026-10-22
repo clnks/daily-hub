@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Daily Hub</title>
+  <meta name="description" content="One small thing for each part of life, every day.">
+  <meta name="theme-color" content="#f5efe6" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1d1b18" media="(prefers-color-scheme: dark)">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Daily">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Instrument+Sans:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="masthead">
+    <p class="masthead__kicker">Daily</p>
+    <h1 class="masthead__date" id="today-date">Today</h1>
+    <nav class="tabs" aria-label="Views">
+      <button class="tabs__btn is-active" data-view="today" aria-pressed="true">Today</button>
+      <button class="tabs__btn" data-view="saved" aria-pressed="false">Saved <span class="tabs__count" id="saved-count"></span></button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="view-today" class="view" aria-label="Today">
+      <div id="cards" class="cards">
+        <p class="loading">Setting out today's page…</p>
+      </div>
+    </section>
+
+    <section id="view-saved" class="view" aria-label="Saved" hidden>
+      <div id="saved-list" class="saved"></div>
+    </section>
+  </main>
+
+  <footer class="colophon">
+    <p>Everything here changes tomorrow. Nothing keeps score.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
