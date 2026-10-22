@@ -2,7 +2,7 @@
    App files are cached on install. Everything else (artwork images, country
    details, fonts) is cached the first time it is fetched. */
 
-const VERSION = "daily-hub-v1";
+const VERSION = "daily-hub-v2";
 
 const APP_FILES = [
   "./",
