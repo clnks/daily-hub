@@ -200,7 +200,7 @@
 
   function artCard(art) {
     const card = el(
-      '<article class="card art">' +
+      '<article class="card art tone-art">' +
         '<div class="art__frame"><img alt="" loading="eager" decoding="async"></div>' +
         '<p class="card__kicker">Learn · Art</p>' +
         '<h2 class="card__title">' + esc(art.title) + "</h2>" +
@@ -225,7 +225,7 @@
 
   function placeCard(place) {
     const card = el(
-      '<article class="card place">' +
+      '<article class="card place tone-place">' +
         '<p class="card__kicker">Learn · A place</p>' +
         '<div class="place__head">' +
           '<img class="place__flag" alt="Flag of ' + esc(place.name) + '" src="https://flagcdn.com/' +
@@ -253,7 +253,7 @@
 
   function quoteCard(q) {
     const card = el(
-      '<article class="card idea">' +
+      '<article class="card idea tone-idea">' +
         '<p class="card__kicker">Learn · An idea</p>' +
         '<blockquote class="quote">' + esc(q.text) + "</blockquote>" +
         '<p class="quote__who">' + esc(q.who) + "</p>" +
@@ -266,7 +266,7 @@
 
   function ideologyCard(i) {
     const card = el(
-      '<article class="card idea">' +
+      '<article class="card idea tone-idea">' +
         '<p class="card__kicker">Learn · An idea</p>' +
         '<h2 class="card__title">' + esc(i.name) + "</h2>" +
         '<p class="card__meta">' + esc(i.oneLine) + "</p>" +
@@ -284,7 +284,7 @@
 
   function watchCard(w) {
     const card = el(
-      '<article class="card watch">' +
+      '<article class="card watch tone-watch">' +
         '<p class="card__kicker">This week’s watch</p>' +
         '<h2 class="card__title">' + esc(w.title) + "</h2>" +
         '<p class="card__meta">' + esc(w.year) + " · " + esc(w.director) + " · " + esc(w.minutes) + " min" +
@@ -313,9 +313,9 @@
     return card;
   }
 
-  function quietCard(kicker, title, body, tick) {
+  function quietCard(kicker, title, body, tick, tone) {
     const card = el(
-      '<article class="card card--quiet">' +
+      '<article class="card card--quiet' + (tone ? " tone-" + tone : "") + '">' +
         '<p class="card__kicker">' + esc(kicker) + "</p>" +
         '<h2 class="card__title">' + esc(title) + "</h2>" +
         (body ? '<div class="card__body"><p class="card__small">' + body + "</p></div>" : "") +
@@ -329,7 +329,7 @@
 
   function moveCard(meal) {
     const card = el(
-      '<article class="card card--quiet">' +
+      '<article class="card card--quiet tone-move">' +
         '<p class="card__kicker">Move</p>' +
         '<div class="move__row"><h2 class="card__title">A walk, any length</h2></div>' +
         '<div class="move__meal">' +
@@ -350,20 +350,20 @@
     return quietCard(
       "Debate reflection", DEBATE_QUESTION,
       "For after a debate. Just think it through, nothing to write.",
-      tickButton("debate", "Thought about it", "Thought about it")
+      tickButton("debate", "Reflected", "Reflected"), "debate"
     );
   }
 
   function moneyCard(m) {
-    return quietCard("Money · " + m.track, m.item.step, esc(m.item.note || ""), tickButton("money", "Done", "Done"));
+    return quietCard("Money · " + m.track, m.item.step, esc(m.item.note || ""), tickButton("money", "Done", "Done"), "money");
   }
 
   function workCard(w) {
-    return quietCard("Work · GRC", w.task, esc(w.note || ""), tickButton("work", "Done", "Done"));
+    return quietCard("Work · GRC", w.task, esc(w.note || ""), tickButton("work", "Done", "Done"), "work");
   }
 
   function mindCard(prompt) {
-    const card = quietCard("Mind", prompt, "", tickButton("mind", "Sat with it", "Sat with it"));
+    const card = quietCard("Mind", prompt, "", tickButton("mind", "Sat with it", "Sat with it"), "mind");
     card.querySelector(".card__foot").prepend(el(
       '<a class="card__link" target="_blank" rel="noopener" href="' + NHS_LINK + '">NHS Talking Therapies: refer yourself</a>'
     ));
@@ -403,7 +403,7 @@
   // a tick inside the tile works on the spot.
   function tile(o) {
     const t = el(
-      '<article class="tile' + (o.cls ? " " + o.cls : "") + '" tabindex="0" role="link" aria-label="Open ' + esc(o.kicker) + '">' +
+      '<article class="tile tone-' + o.tone + (o.cls ? " " + o.cls : "") + '" tabindex="0" role="link" aria-label="Open ' + esc(o.kicker) + '">' +
         (o.thumb ? '<div class="tile__media"><img alt="" loading="lazy" src="' + esc(o.thumb) + '"></div>' : "") +
         '<div class="tile__text">' +
           '<p class="tile__kicker">' + esc(o.kicker) + "</p>" +
@@ -429,34 +429,34 @@
     const add = (node) => node && grid.append(node);
 
     if (p.art) add(tile({
-      cls: "tile--art", view: "learn", kicker: "Art", title: p.art.title,
+      tone: "art", cls: "tile--art", view: "learn", kicker: "Art", title: p.art.title,
       sub: p.art.artist + ", " + p.art.date, thumb: artImage(p.art),
     }));
     if (p.watch) add(tile({
-      cls: "tile--watch", view: "watch", kicker: "This week’s watch", title: p.watch.title,
+      tone: "watch", cls: "tile--watch", view: "watch", kicker: "This week’s watch", title: p.watch.title,
       sub: p.watch.year + " · " + p.watch.director + " · " + p.watch.minutes + " min",
       tick: tickButton("watch:" + p.watch.id, "Watched", "Watched", { weekly: true }),
     }));
     if (p.place) add(tile({
-      view: "learn", kicker: "A place", title: p.place.name, sub: p.place.dish.split(":")[0],
+      tone: "place", view: "learn", kicker: "A place", title: p.place.name, sub: p.place.dish.split(":")[0],
       thumb: "https://flagcdn.com/w160/" + p.place.code.toLowerCase() + ".png", cls: "tile--flag",
     }));
-    if (p.quote) add(tile({ view: "learn", kicker: "An idea", title: "“" + p.quote.text + "”", sub: p.quote.who, cls: "tile--quote" }));
-    if (p.ideology) add(tile({ view: "learn", kicker: "An idea", title: p.ideology.name, sub: p.ideology.oneLine }));
-    if (p.mind) add(tile({ cls: "tile--wide", view: "wellbeing", kicker: "Mind", title: p.mind, tick: tickButton("mind", "Sat with it", "Sat with it") }));
+    if (p.quote) add(tile({ tone: "idea", view: "learn", kicker: "An idea", title: "“" + p.quote.text + "”", sub: p.quote.who, cls: "tile--quote" }));
+    if (p.ideology) add(tile({ tone: "idea", view: "learn", kicker: "An idea", title: p.ideology.name, sub: p.ideology.oneLine }));
+    if (p.mind) add(tile({ tone: "mind", cls: "tile--wide", view: "wellbeing", kicker: "Mind", title: p.mind, tick: tickButton("mind", "Sat with it", "Sat with it") }));
     add(tile({
-      view: "learn", kicker: "Debate reflection", title: "The strongest point from the other side?",
-      tick: tickButton("debate", "Thought about it", "Thought about it"),
+      tone: "debate", view: "learn", kicker: "Debate reflection", title: "The strongest point from the other side?",
+      tick: tickButton("debate", "Reflected", "Reflected"),
     }));
     if (p.meal) add(tile({
-      view: "wellbeing", kicker: "Move", title: "A walk, any length", sub: "Meal idea: " + p.meal.name,
+      tone: "move", view: "wellbeing", kicker: "Move", title: "A walk, any length", sub: "Meal idea: " + p.meal.name,
       tick: tickButton("walk", "Walked", "Walked"),
     }));
     if (p.money) add(tile({
-      view: "work", kicker: "Money · " + p.money.track, title: p.money.item.step,
+      tone: "money", view: "work", kicker: "Money · " + p.money.track, title: p.money.item.step,
       tick: tickButton("money", "Done", "Done"),
     }));
-    if (p.work) add(tile({ view: "work", kicker: "Work · GRC", title: p.work.task, tick: tickButton("work", "Done", "Done") }));
+    if (p.work) add(tile({ tone: "work", view: "work", kicker: "Work · GRC", title: p.work.task, tick: tickButton("work", "Done", "Done") }));
 
     root.append(grid);
   }
