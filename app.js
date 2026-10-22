@@ -404,7 +404,7 @@
   function tile(o) {
     const t = el(
       '<article class="tile tone-' + o.tone + (o.cls ? " " + o.cls : "") + '" tabindex="0" role="link" aria-label="Open ' + esc(o.kicker) + '">' +
-        (o.thumb ? '<div class="tile__media"><img alt="" loading="lazy" src="' + esc(o.thumb) + '"></div>' : "") +
+        (o.thumb ? '<div class="tile__media"><img alt="" fetchpriority="high" src="' + esc(o.thumb) + '"></div>' : "") +
         '<div class="tile__text">' +
           '<p class="tile__kicker">' + esc(o.kicker) + "</p>" +
           '<h3 class="tile__title">' + esc(o.title) + "</h3>" +
