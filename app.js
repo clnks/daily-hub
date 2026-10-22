@@ -343,72 +343,153 @@
     return card;
   }
 
-  /* ---------- Render: Today ---------- */
+  const DEBATE_QUESTION = "What was the strongest point from the side you disagreed with?";
+  const NHS_LINK = "https://www.nhs.uk/nhs-services/mental-health-services/find-nhs-talking-therapies-for-anxiety-and-depression/";
 
-  async function renderToday() {
-    const [art, places, ideas, watch, move, money, work, mind] = await Promise.all(
-      ["art", "places", "ideas", "watch", "move", "money", "work", "mind"].map((n) => getJSON("data/" + n + ".json"))
-    );
-
-    const root = document.getElementById("cards");
-    root.innerHTML = "";
-
-    const add = (node) => node && root.append(node);
-    const label = (text) => root.append(el('<p class="section-label">' + esc(text) + "</p>"));
-
-    // Learn
-    label("Learn");
-    const artPick = art && pick(art.filter((a) => a.image), "art", dayNumber);
-    if (artPick) add(artCard(artPick));
-
-    const placePick = places && pick(places, "places", dayNumber);
-    if (placePick) add(placeCard(placePick));
-
-    if (ideas) {
-      // Alternate: quote one day, ideology the next.
-      const half = Math.floor(dayNumber / 2);
-      if (dayNumber % 2 === 0) add(quoteCard(pick(ideas.quotes, "quotes", half)));
-      else add(ideologyCard(pick(ideas.ideologies, "ideologies", half)));
-    }
-
-    // Weekly
-    const watchPick = watch && pick(watch, "watch", weekNumber);
-    if (watchPick) add(watchCard(watchPick));
-
-    // Daily life
-    label("Today");
-    add(quietCard(
-      "Debate reflection",
-      "What was the strongest point from the side you disagreed with?",
+  function debateCard() {
+    return quietCard(
+      "Debate reflection", DEBATE_QUESTION,
       "For after a debate. Just think it through, nothing to write.",
       tickButton("debate", "Thought about it", "Thought about it")
+    );
+  }
+
+  function moneyCard(m) {
+    return quietCard("Money · " + m.track, m.item.step, esc(m.item.note || ""), tickButton("money", "Done", "Done"));
+  }
+
+  function workCard(w) {
+    return quietCard("Work · GRC", w.task, esc(w.note || ""), tickButton("work", "Done", "Done"));
+  }
+
+  function mindCard(prompt) {
+    const card = quietCard("Mind", prompt, "", tickButton("mind", "Sat with it", "Sat with it"));
+    card.querySelector(".card__foot").prepend(el(
+      '<a class="card__link" target="_blank" rel="noopener" href="' + NHS_LINK + '">NHS Talking Therapies: refer yourself</a>'
     ));
+    return card;
+  }
 
-    const meal = move && pick(move, "move", dayNumber);
-    if (meal) add(moveCard(meal));
+  /* ---------- Today's picks (loaded once) ---------- */
 
-    const moneyPick = money && pickMoney(money);
-    if (moneyPick) {
-      add(quietCard("Money · " + moneyPick.track, moneyPick.item.step, esc(moneyPick.item.note || ""),
-        tickButton("money", "Done", "Done")));
-    }
+  let picksPromise = null;
 
-    const workPick = work && pick(work, "work", dayNumber);
-    if (workPick) {
-      add(quietCard("Work · GRC", workPick.task, esc(workPick.note || ""), tickButton("work", "Done", "Done")));
-    }
+  function loadPicks() {
+    if (picksPromise) return picksPromise;
+    picksPromise = Promise.all(
+      ["art", "places", "ideas", "watch", "move", "money", "work", "mind"].map((n) => getJSON("data/" + n + ".json"))
+    ).then(([art, places, ideas, watch, move, money, work, mind]) => {
+      // Ideas alternate: a quote one day, an ideology the next.
+      const half = Math.floor(dayNumber / 2);
+      const isQuote = dayNumber % 2 === 0;
+      return {
+        art: art && pick(art.filter((a) => a.image), "art", dayNumber),
+        place: places && pick(places, "places", dayNumber),
+        quote: ideas && isQuote ? pick(ideas.quotes, "quotes", half) : null,
+        ideology: ideas && !isQuote ? pick(ideas.ideologies, "ideologies", half) : null,
+        watch: watch && pick(watch, "watch", weekNumber),
+        meal: move && pick(move, "move", dayNumber),
+        money: money && pickMoney(money),
+        work: work && pick(work, "work", dayNumber),
+        mind: mind && pick(mind, "mind", dayNumber),
+      };
+    });
+    return picksPromise;
+  }
 
-    const mindPick = mind && pick(mind, "mind", dayNumber);
-    if (mindPick) {
-      const card = quietCard("Mind", mindPick, "", tickButton("mind", "Sat with it", "Sat with it"));
-      card.querySelector(".card__foot").prepend(el(
-        '<a class="card__link" target="_blank" rel="noopener" ' +
-        'href="https://www.nhs.uk/nhs-services/mental-health-services/find-nhs-talking-therapies-for-anxiety-and-depression/">' +
-        "NHS Talking Therapies: refer yourself</a>"
-      ));
-      add(card);
-    }
+  /* ---------- Overview tiles ---------- */
 
+  // A small dashboard tile. Tapping it opens the full card in its tab;
+  // a tick inside the tile works on the spot.
+  function tile(o) {
+    const t = el(
+      '<article class="tile' + (o.cls ? " " + o.cls : "") + '" tabindex="0" role="link" aria-label="Open ' + esc(o.kicker) + '">' +
+        (o.thumb ? '<div class="tile__media"><img alt="" loading="lazy" src="' + esc(o.thumb) + '"></div>' : "") +
+        '<div class="tile__text">' +
+          '<p class="tile__kicker">' + esc(o.kicker) + "</p>" +
+          '<h3 class="tile__title">' + esc(o.title) + "</h3>" +
+          (o.sub ? '<p class="tile__sub">' + esc(o.sub) + "</p>" : "") +
+        "</div>" +
+      "</article>"
+    );
+    const img = t.querySelector(".tile__media img");
+    if (img) img.addEventListener("error", () => img.parentElement.remove());
+    if (o.tick) t.append(o.tick);
+    const open = (e) => {
+      if (e.target.closest(".tick, a")) return;
+      location.hash = o.view;
+    };
+    t.addEventListener("click", open);
+    t.addEventListener("keydown", (e) => { if (e.key === "Enter") open(e); });
+    return t;
+  }
+
+  function renderOverview(root, p) {
+    const grid = el('<div class="dash"></div>');
+    const add = (node) => node && grid.append(node);
+
+    if (p.art) add(tile({
+      cls: "tile--art", view: "learn", kicker: "Art", title: p.art.title,
+      sub: p.art.artist + ", " + p.art.date, thumb: artImage(p.art),
+    }));
+    if (p.watch) add(tile({
+      cls: "tile--watch", view: "watch", kicker: "This week’s watch", title: p.watch.title,
+      sub: p.watch.year + " · " + p.watch.director + " · " + p.watch.minutes + " min",
+      tick: tickButton("watch:" + p.watch.id, "Watched", "Watched", { weekly: true }),
+    }));
+    if (p.place) add(tile({
+      view: "learn", kicker: "A place", title: p.place.name, sub: p.place.dish.split(":")[0],
+      thumb: "https://flagcdn.com/w160/" + p.place.code.toLowerCase() + ".png", cls: "tile--flag",
+    }));
+    if (p.quote) add(tile({ view: "learn", kicker: "An idea", title: "“" + p.quote.text + "”", sub: p.quote.who, cls: "tile--quote" }));
+    if (p.ideology) add(tile({ view: "learn", kicker: "An idea", title: p.ideology.name, sub: p.ideology.oneLine }));
+    if (p.mind) add(tile({ cls: "tile--wide", view: "wellbeing", kicker: "Mind", title: p.mind, tick: tickButton("mind", "Sat with it", "Sat with it") }));
+    add(tile({
+      view: "learn", kicker: "Debate reflection", title: "The strongest point from the other side?",
+      tick: tickButton("debate", "Thought about it", "Thought about it"),
+    }));
+    if (p.meal) add(tile({
+      view: "wellbeing", kicker: "Move", title: "A walk, any length", sub: "Meal idea: " + p.meal.name,
+      tick: tickButton("walk", "Walked", "Walked"),
+    }));
+    if (p.money) add(tile({
+      view: "work", kicker: "Money · " + p.money.track, title: p.money.item.step,
+      tick: tickButton("money", "Done", "Done"),
+    }));
+    if (p.work) add(tile({ view: "work", kicker: "Work · GRC", title: p.work.task, tick: tickButton("work", "Done", "Done") }));
+
+    root.append(grid);
+  }
+
+  /* ---------- Views ---------- */
+
+  const VIEWS = {
+    overview: (root, p) => renderOverview(root, p),
+    learn: (root, p) => {
+      if (p.art) root.append(artCard(p.art));
+      if (p.place) root.append(placeCard(p.place));
+      if (p.quote) root.append(quoteCard(p.quote));
+      if (p.ideology) root.append(ideologyCard(p.ideology));
+      root.append(debateCard());
+    },
+    watch: (root, p) => { if (p.watch) root.append(watchCard(p.watch)); },
+    wellbeing: (root, p) => {
+      if (p.meal) root.append(moveCard(p.meal));
+      if (p.mind) root.append(mindCard(p.mind));
+    },
+    work: (root, p) => {
+      if (p.money) root.append(moneyCard(p.money));
+      if (p.work) root.append(workCard(p.work));
+    },
+    saved: (root) => renderSaved(root),
+  };
+
+  async function render(name) {
+    const root = document.getElementById("view");
+    const p = name === "saved" ? null : await loadPicks();
+    root.innerHTML = "";
+    root.className = "view view--" + name;
+    VIEWS[name](root, p);
     if (!root.children.length) {
       root.append(el('<p class="empty">Today’s page could not load. It will be here when you are back online.</p>'));
     }
@@ -435,9 +516,7 @@
     ["watch", "Films and documentaries"],
   ];
 
-  function renderSaved() {
-    const root = document.getElementById("saved-list");
-    root.innerHTML = "";
+  function renderSaved(root) {
     if (!state.saved.length) {
       root.append(el('<p class="empty">Nothing saved yet. Tap the heart on anything you would like to keep.</p>'));
       return;
@@ -470,24 +549,32 @@
     document.getElementById("saved-count").textContent = n ? "(" + n + ")" : "";
   }
 
-  /* ---------- Views ---------- */
+  /* ---------- Tabs ---------- */
 
-  function showView(name) {
+  // The open tab lives in the address (#learn, #watch...), so the back
+  // button works and the app reopens where you left it.
+  function currentView() {
+    const name = location.hash.replace("#", "");
+    return VIEWS[name] ? name : "overview";
+  }
+
+  function showView() {
+    const name = currentView();
     document.querySelectorAll(".tabs__btn").forEach((b) => {
-      const on = b.dataset.view === name;
+      const on = b.getAttribute("href") === "#" + name;
       b.classList.toggle("is-active", on);
-      b.setAttribute("aria-pressed", on);
+      if (on) {
+        b.setAttribute("aria-current", "page");
+        b.scrollIntoView({ block: "nearest", inline: "nearest" });
+      } else {
+        b.removeAttribute("aria-current");
+      }
     });
-    document.getElementById("view-today").hidden = name !== "today";
-    document.getElementById("view-saved").hidden = name !== "saved";
-    if (name === "saved") renderSaved();
-    else renderToday();
+    render(name);
     window.scrollTo(0, 0);
   }
 
-  document.querySelectorAll(".tabs__btn").forEach((b) =>
-    b.addEventListener("click", () => showView(b.dataset.view))
-  );
+  window.addEventListener("hashchange", showView);
 
   /* ---------- Start ---------- */
 
@@ -495,7 +582,7 @@
     weekday: "long", day: "numeric", month: "long",
   });
   updateSavedCount();
-  renderToday();
+  showView();
 
   // If the app is left open past midnight, refresh when it is looked at again.
   document.addEventListener("visibilitychange", () => {

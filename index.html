@@ -19,25 +19,24 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="masthead">
-    <p class="masthead__kicker">Daily</p>
-    <h1 class="masthead__date" id="today-date">Today</h1>
-    <nav class="tabs" aria-label="Views">
-      <button class="tabs__btn is-active" data-view="today" aria-pressed="true">Today</button>
-      <button class="tabs__btn" data-view="saved" aria-pressed="false">Saved <span class="tabs__count" id="saved-count"></span></button>
-    </nav>
+  <header class="topbar">
+    <div class="topbar__inner">
+      <p class="topbar__brand">Daily <span class="topbar__date" id="today-date">Today</span></p>
+      <nav class="tabs" aria-label="Sections">
+        <a class="tabs__btn" href="#overview">Overview</a>
+        <a class="tabs__btn" href="#learn">Learn</a>
+        <a class="tabs__btn" href="#watch">Watch</a>
+        <a class="tabs__btn" href="#wellbeing">Wellbeing</a>
+        <a class="tabs__btn" href="#work">Money &amp; work</a>
+        <a class="tabs__btn" href="#saved">Saved <span class="tabs__count" id="saved-count"></span></a>
+      </nav>
+    </div>
   </header>
 
   <main>
-    <section id="view-today" class="view" aria-label="Today">
-      <div id="cards" class="cards">
-        <p class="loading">Setting out today's page…</p>
-      </div>
-    </section>
-
-    <section id="view-saved" class="view" aria-label="Saved" hidden>
-      <div id="saved-list" class="saved"></div>
-    </section>
+    <div id="view" class="view">
+      <p class="loading">Setting out today's page…</p>
+    </div>
   </main>
 
   <footer class="colophon">
